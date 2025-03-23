@@ -12,6 +12,10 @@ source "amazon-ebs" "amazon_linux" {
   instance_type = "t2.micro"
   region        = "us-east-1"
 
+  tags = {
+    Application = "custom-ami"
+  }
+
   source_ami_filter {
     filters = {
       name                = "amzn2-ami-hvm-*-x86_64-gp2"
