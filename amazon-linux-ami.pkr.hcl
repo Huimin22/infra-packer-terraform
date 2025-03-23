@@ -13,7 +13,8 @@ source "amazon-ebs" "amazon_linux" {
   region        = "us-east-1"
 
   tags = {
-    Application = "custom-ami"
+    Application = "my-ami"
+    Name        = "Custom-AMI"
   }
 
   source_ami_filter {
