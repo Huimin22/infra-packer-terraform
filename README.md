@@ -41,8 +41,8 @@ packer fmt .
 packer validate .
 packer build amazon-linux-ami.pkr.hcl
 ```
-![](build.png)  
-![](ami.png)
+![](./pic/build.png)  
+![](./pic/ami.png)
 
 ### Deploy AWS Resources with Terraform
 ```sh
@@ -51,6 +51,17 @@ terraform plan
 terraform apply
 ```
 
+![](./pic/launchvm.png)  
+![](./pic/bastion1.png)
+
+![](./pic/inboundrule.png)
+
+![](./pic/showvm.png)
+![](./pic/private-vm-ami.png)
+![](./pic/privatevm.png)
+
+![](./pic/vpc2.png)
+![](./pic/vpc1.png)
 ## Result
 
 ### Access Bastion Host
@@ -63,6 +74,7 @@ You connect to Private EC2 from your Bastion host.
 ```sh
 ssh ec2-user@private-ec2-ip
 ```
+![](./pic/sshvm.png)
 
 ### Destroy Resources
 If you want to delete all the resources, use this command. 
