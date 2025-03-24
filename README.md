@@ -34,6 +34,19 @@ Enter your directory and generate the key.
 ssh-keygen -t rsa -b 4096 -f my-key
 ```
 
+### Configure Variables
+
+Before applying the Terraform configuration, update the following variables in your variable file to match your environment:
+
+1. **`aws_region`**: Set the AWS region you want to use.
+   - Example: `"us-east-1"`
+
+2. **`public_key`**: Specify the name of your local public SSH key (without the file extension).
+   - Example: `"my-key"`
+
+3. **`my_ip`**: Replace this with your local IP address (in CIDR notation).
+   - Example: `"70.000.66.125/32"` (Ensure it's your current IP address for secure SSH access)
+
 ### Create Custom AMI with Packer
 ```sh
 packer init .
