@@ -65,7 +65,11 @@ terraform apply
 ## Result
 
 ### Access Bastion Host
-Now you can access your Bastion Host.
+Now you can access your Bastion Host. 
+Before accessing your Bastion Host, add your private key to the SSH agent。
+```sh
+ssh-add your-key
+```
 ```sh
 ssh -A -i my-key ec2-user@your-public-ip
 ```
