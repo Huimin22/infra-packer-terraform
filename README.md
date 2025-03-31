@@ -89,5 +89,14 @@ ansible-playbook -i aws_ec2.yaml playbook.yaml -e 'ansible_ssh_common_args="-o S
 ![](./pic/a2.png)
 
 - The private instance has installed the docker.
+Access your private instance, check the docker version.
+```sh
+ssh ec2-user@private-ip
+```
 ![](./pic/docker.png)
+
+- If you want to delete all the resources, use this command.
+```sh
+terraform destroy
+```
 
