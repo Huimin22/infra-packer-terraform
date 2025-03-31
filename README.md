@@ -48,6 +48,11 @@ terraform init
 terraform plan
 terraform apply
 ```
+![](./pic/showvm.png)  
+![](./pic/tag1.png)
+![](./pic/tag2.png)
+
+
 ### Access to Ansible Controller
 Configure SSH Access
 To connect to the Ansible Controller instance, follow these steps:
@@ -68,10 +73,21 @@ scp aws_ec2.yaml ec2-user@your ip:~
 After Terraform completes provisioning, use Ansible to configure the instances:
 ```sh
 ansible-inventory -i aws_ec2.yaml --list
+```
+![](./pic/inv.png) 
+
+To prevent SSH host key verification issues when connecting to dynamically created EC2 instances, use these extra arguments.
+```sh
 ansible-playbook -i aws_ec2.yaml playbook.yaml -e 'ansible_ssh_common_args="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"'
 ```
 
-### Expected Results
 
+### Expected Results
 - Disk usage should be reported for each instance.
+
+![](./pic/a1.png)  
+![](./pic/a2.png)
+
+- The private instance has installed the docker.
+![](./pic/docker.png)
 
