@@ -48,6 +48,9 @@ terraform init
 terraform plan
 terraform apply
 ```
+
+Launch 3 Ubuntu and 3 Amazon Linux instances. 1 more EC2 instance to host the Ansible Controller.
+Tag them with (OS: ubuntu or OS:amazon)
 ![](./pic/ec2.png)  
 ![](./pic/tag1.png)
 ![](./pic/tag2.png)
@@ -69,6 +72,8 @@ scp aws_ec2.yaml ec2-user@your ip:~
 ```
 
 ### Configure Instances with Ansible
+Configure AWS credentials on the Ansible instance.
+
 After Terraform completes provisioning, use Ansible to configure the instances:
 ```sh
 ansible-inventory -i aws_ec2.yaml --list
@@ -80,15 +85,14 @@ To prevent SSH host key verification issues when connecting to dynamically creat
 ansible-playbook -i aws_ec2.yaml playbook.yaml -e 'ansible_ssh_common_args="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"'
 ```
 
-
 ### Expected Results
 - Disk usage should be reported for each instance.
 
 ![](./pic/a1.png)  
 ![](./pic/a2.png)
 
-- The private instance has installed the docker.
-Access your private instance, check the docker version.
+- The private instance has installed the latest docker.
+Access your private instance, check the latest docker version.
 ```sh
 ssh ec2-user@private-ip
 ```
