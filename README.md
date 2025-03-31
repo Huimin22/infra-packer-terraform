@@ -58,7 +58,6 @@ Configure SSH Access
 To connect to the Ansible Controller instance, follow these steps:
 
 ```sh
-chmod 600 devop.pem
 ssh-add devop.pem
 ssh -A -i devop.pem ec2-user@your ip
 ```
