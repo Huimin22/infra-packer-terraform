@@ -48,7 +48,7 @@ terraform init
 terraform plan
 terraform apply
 ```
-![](./pic/showvm.png)  
+![](./pic/ec2.png)  
 ![](./pic/tag1.png)
 ![](./pic/tag2.png)
 
