@@ -1,101 +1,77 @@
-# AWS Infrastructure with Packer and Terraform
 
+# Terraform and Ansible Automation
 
-## Intro  
-This project automates AWS infrastructure provisioning using **Packer** and **Terraform**.  
+## Introduction
+This project automates the provisioning of AWS EC2 instances using Terraform and configures them using Ansible. The setup includes:
 
-1. **Packer** is used to create a custom Amazon Machine Image (AMI) that includes:  
-   - Amazon Linux  
-   - Docker installed  
-   - SSH public key pre-configured for secure access  
+1. **Terraform** provisions:
+   - 6 EC2 instances: 3 Ubuntu and 3 Amazon Linux, tagged accordingly.
+   - 1 additional EC2 instance to serve as the Ansible Controller.
 
-2. **Terraform** provisions AWS resources:  
-   - A **VPC** with private and public subnets  
-   - A **bastion host** in the public subnet (only accessible from your IP on port 22)  
-   - **Six EC2 instances** in the private subnet using the custom AMI  
-
+2. **Ansible Playbook** targets the 6 EC2 instances to:
+   - Update and upgrade packages (if needed).
+   - Verify that the latest Docker version is installed.
+   - Report disk usage for each EC2 instance.
 
 ## Preparation
-Install [Packer](https://developer.hashicorp.com/packer/downloads) and [Terraform](https://developer.hashicorp.com/terraform/downloads).
-
-## Usage
-
-Clone this repo to your local machine
+### Install Required Tools
+Ensure you have the following tools installed on your local machine:
+- [Packer](https://developer.hashicorp.com/packer/downloads)
+- [Terraform](https://developer.hashicorp.com/terraform/downloads)
 
 ### AWS Configuration
+Configure your AWS credentials by running the following commands:
 ```sh
 aws configure
 aws configure set aws_session_token your-token
 ```
 
-### Generate SSH Key
-Enter your directory and generate the key.
-```sh
-ssh-keygen -t rsa -b 4096 -f my-key
-```
+Download the pem file to your repo.
 
+## Usage
 ### Configure Variables
+Before applying the Terraform configuration, update the following variables in your Terraform variable file to match your environment:
 
-Before applying the Terraform configuration, update the following variables in your variable file to match your environment:
-
-1. **`aws_region`**: Set the AWS region you want to use.
+1. **`aws_region`**: Set the AWS region where you want to deploy the resources.
    - Example: `"us-east-1"`
 
-2. **`public_key`**: Specify the name of your local public SSH key (without the file extension).
+2. **`private_ssh_key`**: Specify the name of your SSH key (without the file extension) for SSH access.
    - Example: `"my-key"`
 
-3. **`my_ip`**: Replace this with your local IP address (in CIDR notation).
-   - Example: `"70.000.66.125/32"` (Ensure it's your current IP address for secure SSH access)
-
-### Create Custom AMI with Packer
-```sh
-packer init .
-packer fmt .
-packer validate .
-packer build amazon-linux-ami.pkr.hcl
-```
-![](./pic/build.png)  
-![](./pic/ami.png)
+3. **`ip_address`**: Replace this with your current IP address in CIDR notation for secure SSH access.
+   - Example: `"70.000.66.125/32"`
 
 ### Deploy AWS Resources with Terraform
+Execute the following commands to provision the AWS infrastructure:
 ```sh
 terraform init
 terraform plan
 terraform apply
 ```
+### Access to Ansible Controller
+Configure SSH Access
+To connect to the Ansible Controller instance, follow these steps:
 
-![](./pic/launchvm.png)  
-![](./pic/bastion1.png)
-
-![](./pic/inboundrule.png)
-
-![](./pic/showvm.png)
-![](./pic/private-vm-ami.png)
-![](./pic/privatevm.png)
-
-![](./pic/vpc2.png)
-![](./pic/vpc1.png)
-## Result
-
-### Access Bastion Host
-Now you can access your Bastion Host. 
-Before accessing your Bastion Host, add your private key to the SSH agent。
 ```sh
-ssh-add your-key
+chmod 600 devop.pem
+ssh-add devop.pem
+ssh -A -i devop.pem ec2-user@your ip
 ```
-```sh
-ssh -A -i my-key ec2-user@your-public-ip
-```
-You connect to Private EC2 from your Bastion host.
-### Connect to Private EC2 from Bastion
-```sh
-ssh ec2-user@private-ec2-ip
-```
-![](./pic/sshvm.png)
 
-### Destroy Resources
-If you want to delete all the resources, use this command. 
+Copy the necessary Ansible configuration files to the Ansible Controller instance:
 ```sh
-terraform destroy
+scp playbook.yaml ec2-user@your ip:~
+scp aws_ec2.yaml ec2-user@your ip:~
 ```
+
+### Configure Instances with Ansible
+After Terraform completes provisioning, use Ansible to configure the instances:
+```sh
+ansible-inventory -i aws_ec2.yaml --list
+ansible-playbook -i aws_ec2.yaml playbook.yaml -e 'ansible_ssh_common_args="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"'
+```
+
+### Expected Results
+
+- Disk usage should be reported for each instance.
 
